@@ -1,0 +1,135 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERRONNYA - Ethical Hacking & Cybersecurity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Fira+Code&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <header>
+    <div class="logo">CYBERRONNYA</div>
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#videos">Videos</a>
+      <a href="#certifications">Certifications</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section id="home" class="hero" data-animate>
+    <div class="hero-content">
+      <h1 class="glitch">CYBERRONNYA</h1>
+      <p>Your Guide to Ethical Hacking & Cybersecurity</p>
+      <div class="social-icons">
+        <a href="https://www.instagram.com/rohan.salunke447/" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.youtube.com/@ICC_HackerRohan/videos" target="_blank"><i class="fab fa-youtube"></i></a>
+      </div>
+      <button id="watchBtn" class="ripple">Watch Latest Videos</button>
+    </div>
+  </section>
+
+  <section id="about" class="about" data-animate>
+    <h2>About Me</h2>
+    <div class="about-card" data-tilt>
+      <p>I am Rohan Salunke, a passionate cybersecurity expert, YouTuber, and student from Dhanora, a small village near Takli Kolte in the Phulambri block of Chhatrapati Sambhajinagar, Maharashtra, India. Currently pursuing a Bachelor’s in Computer Science at Fergusson College, Pune—a renowned institution with a sprawling 65-acre campus, historic architecture, and vibrant academic environment—I am dedicated to advancing cybersecurity in India through innovation and education.</p>
+      <h3>My Journey</h3>
+      <p>My journey into technology began in 5th grade (2015–2017) when I explored games and experimented with my parents’ devices. At Z.P.P. School in Dhanora, I cherished some of my most formative years. A pivotal moment came when I received a Raspberry Pi from the Pratham Digital Foundation, introducing me to Linux. Navigating its command-line interface was daunting, but my curiosity drove me to learn. Using YouTube tutorials, I installed Wine to run games, overcoming technical challenges and building foundational skills.</p>
+      <p>YouTube’s algorithm soon introduced me to cybersecurity and ethical hacking content, sparking a deep interest. After scoring 92% in my 10th-grade SSC exams, I enrolled in Government Polytechnic, Chhatrapati Sambhajinagar. My passion for cybersecurity led me to prioritize self-study over college. I invested in a laptop—a significant milestone for my family—and immersed myself in advanced ethical hacking techniques. This focus caused backlogs in my second semester, prompting me to pursue my 11th and 12th grades while completing two years of intensive cybersecurity training.</p>
+      <p>During this period, I worked part-time at CyberIndians, editing videos for their YouTube channel (<a href="https://www.youtube.com/@CyberIndiansofficial" target="_blank">CyberIndians YouTube</a>) and contributing to their mission (<a href="https://cyberindians.com/" target="_blank">CyberIndians Website</a>). I also completed a 6-month internship as a technical supporter, gaining practical experience. Now, at Fergusson College, I balance academics with cybersecurity projects, driven by a vision to transform India’s digital security landscape.</p>
+      <h3>My Mission</h3>
+      <p>India faces a critical cybersecurity crisis, with scams costing an estimated ₹20,000 crore annually, while the national cybersecurity budget is a mere ₹1,900 crore, with only ₹300–700 crore allocated to core initiatives. Maharashtra’s cyber cell often lacks the expertise to address modern threats, such as tracing lost devices or leveraging Linux-based tools. My mission is to revolutionize cybersecurity in India by developing innovative solutions, raising awareness, and bridging the gap between technology and law enforcement. Through my YouTube channel, CYBERRONNYA, I aim to educate and empower individuals to navigate the digital world securely.</p>
+    </div>
+  </section>
+
+  <section id="videos" class="videos" data-animate>
+    <h2>🎥 My Videos</h2>
+    <div class="video-grid"></div>
+  </section>
+
+  <section id="certifications" class="certifications" data-animate>
+    <h2>Certificates</h2>
+    <div class="cert-grid-large">
+      <div class="cert-img-large" data-tilt><h3>Cybersecurity Expert</h3></div>
+      <div class="cert-img-large" data-tilt><h3>Certified Ethical Hacker (CEH)</h3></div>
+      <div class="cert-img-large" data-tilt><h3>Offensive Security Certified Professional (OSCP)</h3></div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact" data-animate>
+    <h2>Contact</h2>
+    <div class="contact-card">
+      <form id="contact-form">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit" class="ripple">Send Message</button>
+      </form>
+      <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/+919209252611" target="_blank">WhatsApp: +919209252611</a></p>
+      <p><i class="fas fa-envelope"></i> <a href="mailto:rohansalunke0365@gmail.com">rohansalunke0365@gmail.com</a></p>
+    </div>
+  </section>
+
+  <footer>
+    <p class="glow-text">
+      Site by Rohan Salunke | <a href="https://www.instagram.com/rohan.salunke447/" target="_blank">IG: rohan.salunke447</a> | <a href="https://www.youtube.com/@ICC_HackerRohan/videos" target="_blank">YT: CYBERRONNYA</a>
+    </p>
+  </footer>
+
+  <div class="modal" id="modal">
+    <span id="modal-close" class="fas fa-times"></span>
+    <iframe id="modal-img" frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
